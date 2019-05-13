@@ -1,28 +1,44 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { connect } from 'react-redux';
+// import { Hand, Card, CardBack } from 'react-deck-o-cards';
+import Deck from './components/Deck';
 import './App.css';
+import Player from './components/Player';
+import { deal } from './actions/actions';
+
+const mapDispatchToProps = (dispatch) => ({
+  deal: (payload) => deal(dispatch, payload)
+});
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dealButtonDisabled: false
+    }
+  }
+  handleDealButtonClick() {
+    this.props.deal();
+    this.setState({dealButtonDisabled: true});
+  }
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <button  className="btn btn-primary"
+          onClick={() => this.handleDealButtonClick()}
+          disabled={this.state.dealButtonDisabled}>
+          Deal
+        </button>
+        <Deck cards={this.props.cards} />
+        <div className="container-fluid">
+          <div className="row">
+            <Player playerName="computer" />
+            <Player playerName="player" />
+          </div>
+        </div>
       </div>
     );
   }
 }
 
-export default App;
+export default connect(null, mapDispatchToProps)(App);
